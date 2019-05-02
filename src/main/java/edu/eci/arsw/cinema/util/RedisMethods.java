@@ -55,5 +55,32 @@ public class RedisMethods {
         return content;
     }
 
+    public List<List<Boolean>> buyTicketRedis(int row, int col, String cinema, String date, String movieName) throws JsonParseException, JsonMappingException, IOException, CinemaException {
+        String key = cinema+"+"+date+"+"+movieName+"+";
+        String value = getFromREDIS(key);
+        ObjectMapper mapper = new ObjectMapper();
+        List<List<Boolean>> seats = mapper.readValue(value, ArrayList.class);
+        if (seats.get(row).get(col).equals(true)){
+            seats.get(row).set(col,Boolean.FALSE);
+            String data = mapper.writeValueAsString(seats);
+            saveToREDIS(key, data);
+            value = getFromREDIS(key);
+            seats = mapper.readValue(value, ArrayList.class);
+            return seats;
+        }
+        else{
+            throw new CinemaException("Este asiento ya esta reservado. Porfavor vuelva a intentar el proceso.");
+        }
+        
+        
+    }
+    
+    public List<List<Boolean>> getSeatsRedis(String cinema, CinemaFunction f) throws JsonParseException, JsonMappingException, IOException {
+        String key = cinema+"+"+f.getDate()+"+"+f.getMovie().getName()+"+";
+        String value = getFromREDIS(key);
+        ObjectMapper mapper = new ObjectMapper();
+        List<List<Boolean>> seats = mapper.readValue(value, ArrayList.class);
+        return seats;
+    }
 
 }

@@ -38,13 +38,18 @@ public class CinemaFunction {
             seats.get(row).set(col,Boolean.FALSE);
         }
         else{
-            throw new CinemaException("Seat booked");
+            throw new CinemaException("Esta silla ya esta reservada.");
         }
     }
     
     public List<List<Boolean>> getSeats() {
         return this.seats;
     }
+    
+    public void setSeats(List<List<Boolean>> seats){
+        this.seats=seats;
+    }
+
     
     public Movie getMovie() {
         return movie;
